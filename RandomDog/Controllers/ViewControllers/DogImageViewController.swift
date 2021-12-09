@@ -8,22 +8,48 @@
 import UIKit
 
 class DogImageViewController: UIViewController {
-
+    
+    var dog: Dog?
+    
+    
+    @IBOutlet weak var dogImageView: UIImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        
+    }
+    
+    func fetchImageAndUpdateViews(with dog: Dog) {
+        DogController.fetchImage(for: dog) { (result) in
+            DispatchQueue.main.async {
+                switch result {
+                
+                case .success(let dog):
+                    self.dogImageView.image = dog
+                case .failure(let error):
+                    print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+
+                }
+            }
+        }
     }
     
 
-    /*
-    // MARK: - Navigation
+    @IBAction func newDogButtonPressed(_ sender: Any) {
+        
+        DogController.fetchDog { (result) in
+            switch result {
+            
+            case .success(let dog):
+                self.fetchImageAndUpdateViews(with: dog)
+            case .failure(let error):
+                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+            }
+        }
+        
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
     }
-    */
+    
 
 }
